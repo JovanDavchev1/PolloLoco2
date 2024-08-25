@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
-    
     <script src="models/drawable-object.class.js"></script>
     <script src="models/movable-object.class.js"></script>
     <script src="models/character.class.js"></script>
@@ -19,16 +18,19 @@
     <script src="models/keyboard.class.js"></script>
     <script src="models/level.class.js"></script>
     <script src="models/trowable-object.class.js"></script>
+    <script src="models/colectables.class.js"></script>
     <script src="models/endboss.class.js"></script>
-    <script src="levels/level1.js"></script>   
+    <script src="levels/level1.js"></script>
     <script src="js/game.js"></script>
 
 </head>
 
-<body >
+<body>
     <h1>El pollo loco</h1>
-    <canvas id="canvas" width="720" height="480"></canvas>
-    <a href="#" id="start-game" onclick="startGame()">Start</a>
+    <div class="start-screen">
+        <canvas id="canvas" width="720" height="480"></canvas>
+        <a href="#" id="start-game" onclick="startGame()">Start</a>
+    </div>
 </body>
 
 </html>

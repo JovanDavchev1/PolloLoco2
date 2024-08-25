@@ -15,8 +15,16 @@ function init() {
 }
 
 function startGame() {
-  document.getElementById('start-game').classList.add('d-none');
-  world.gameStart();  
+  
+  if (typeof initlvl1 === 'function') {
+      initlvl1();
+  } else {
+      console.error('initlvl1 function is not defined.');
+  }
+
+
+  document.getElementById('start-game').classList.add('d-none')
+  world.gameStart();
 }
 
 document.addEventListener("keydown", (e) => {

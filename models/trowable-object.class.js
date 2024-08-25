@@ -38,8 +38,6 @@ class ThrowableObject extends MovableObject {
                 this.playAnimation(this.IMAGES_BOTTLE_SPLASH)
                 this.speedY = 0
                 this.speedX = 0
-
-
             } else {
                 this.playAnimation(this.IMAGES_ROTATING)
             }
