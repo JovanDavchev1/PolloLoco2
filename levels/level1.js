@@ -54,8 +54,15 @@ function initlvl1() {
         new Collectible(COIN_IMAGE, 200, 350, 'coin'),
         new Collectible(BOTTLE_IMAGE, 400, 350, 'bottle'),
         new Collectible(COIN_IMAGE, 600, 350, 'coin'),
-        new Collectible(BOTTLE_IMAGE, 800, 350, 'bottle')
-        
+        new Collectible(BOTTLE_IMAGE, 800, 350, 'bottle'),
+        new Collectible(COIN_IMAGE, 1000, 350, 'coin'),
+        new Collectible(BOTTLE_IMAGE, 1100, 350, 'bottle'),
+        new Collectible(COIN_IMAGE, 1200, 350, 'coin'),
+        new Collectible(BOTTLE_IMAGE, 1300, 350, 'bottle'),
+        new Collectible(COIN_IMAGE, 1400, 350, 'coin'),
+        new Collectible(BOTTLE_IMAGE, 1500, 350, 'bottle'),
+        new Collectible(COIN_IMAGE, 1600, 350, 'coin'),
+        new Collectible(BOTTLE_IMAGE, 1700, 350, 'bottle')
     );
     
    

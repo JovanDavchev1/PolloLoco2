@@ -13,6 +13,13 @@ class World {
     startingScreen = new StartingScreen();
     collectibles = [];
     collectedBottles = 0;
+    statusBarBottles = new BottlesStatusBar();
+    statusBarCoins = new CoinsStatusBar();
+    maxCoins = 10;
+    collectedCoins = 0;
+    maxBottles = 10;
+    gameOver = false; // Flag to check if the game is over
+    gameOverScreen = new GameOverScreen()
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -21,7 +28,7 @@ class World {
         console.log('Game started is ', this.gameStarted)
         this.draw();
         this.setWorld();
-
+        this.statusBarBottles.setPercentage(this.getBottlesPercentage());
 
     }
 
@@ -44,40 +51,38 @@ class World {
     }
 
     draw() {
-
-
-        if (this.gameStarted == true) {
+        if (this.gameStarted && !this.gameOver) {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
+    
             this.ctx.translate(this.camera_x, 0);
             this.addObjectsToMap(this.level.backgroundObjects);
-            this.addObjectsToMap(this.level.collectibles); // Draw collectibles
-            
+            this.addObjectsToMap(this.level.collectibles);
+    
             this.ctx.translate(-this.camera_x, 0);
-            // Space For fixed objects
-            
             this.addToMap(this.statusBar);
+            this.addToMap(this.statusBarBottles);
+            this.addToMap(this.statusBarCoins);
             this.ctx.translate(this.camera_x, 0);
-
+    
             this.addToMap(this.character);
-            this.addObjectsToMap(this.throwableObject)
-            this.addObjectsToMap(this.level.clouds)
-            this.addObjectsToMap(this.level.enemies)
-
+            this.addObjectsToMap(this.throwableObject);
+            this.addObjectsToMap(this.level.clouds);
+            this.addObjectsToMap(this.level.enemies);
+    
             this.ctx.translate(-this.camera_x, 0);
-            self = this;
-            requestAnimationFrame(function () {
-                self.draw();
-            });
+            requestAnimationFrame(() => this.draw());
+        } else if (this.gameOver) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.addObjectsToMap(this.level.backgroundObjects);
+            this.addToMap(this.gameOverScreen);
+            // Stop the game loop
         } else {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.addToMap(this.startingScreen)
-            self = this;
-            requestAnimationFrame(function () {
-                self.draw();
-            });
+            this.addToMap(this.startingScreen);
+            requestAnimationFrame(() => this.draw());
         }
     }
+    
 
 
     addObjectsToMap(objects) {
@@ -114,13 +119,24 @@ class World {
     }
 
     run() {
-        if (this.gameStarted == true) {
+        if (this.gameStarted && !this.gameOver) {
             setInterval(() => {
                 this.checkCollisions();
                 this.checkThrowObject();
-
-            }, 1000)
+                if (this.character.isDead()) { // Check if the character is dead
+                    this.gameOver = true;
+                }
+            }, 1000);
         }
+    }
+
+
+    getBottlesPercentage() {
+        return (this.collectedBottles / this.maxBottles) * 100;
+    }
+
+    getCoinsPercentage() {
+        return (this.collectedCoins / this.maxCoins) * 100;
     }
 
     checkThrowObject() {
@@ -128,8 +144,9 @@ class World {
             let bottle = new ThrowableObject(this.character.x, this.character.y + 100);
             this.throwableObject.push(bottle);
             this.collectedBottles--; // Decrease the count of collected bottles
+            this.statusBarBottles.setPercentage(this.getBottlesPercentage()); // Update status bar
             console.log('Bottle thrown! Remaining:', this.collectedBottles);
-    
+
             // Check if the thrown bottle collides with any enemy
             this.level.enemies.forEach((enemy) => {
                 if (bottle.isColliding(enemy)) {
@@ -139,23 +156,23 @@ class World {
             });
         }
     }
-    
 
 
     checkCollisions() {
         this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
                 this.character.hit();
-                this.statusBar.setPercentage(this.character.energy)
+                this.statusBar.setPercentage(this.character.energy);
             }
         });
         this.level.collectibles.forEach((collectible, index) => {
             if (this.character.isColliding(collectible) && collectible.type === 'bottle') {
                 this.collectedBottles++;
                 this.level.collectibles.splice(index, 1); // Remove the collected bottle
+                this.statusBarBottles.setPercentage(this.getBottlesPercentage()); // Update status bar
                 console.log('Bottle collected! Total:', this.collectedBottles);
             } else if (this.character.isColliding(collectible) && collectible.type === 'coin') {
-                // Handle coin collection (if needed)
+                // Handle coin collection and update coin status bar if applicable
             }
         });
     }
