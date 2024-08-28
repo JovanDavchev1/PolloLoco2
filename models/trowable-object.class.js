@@ -1,6 +1,10 @@
 class ThrowableObject extends MovableObject {
 
     splash = false;
+    throwAnimation;
+    splashAnimation;
+    currentFrame = 0;
+    world;
 
     IMAGES_ROTATING = [
         'img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
@@ -26,6 +30,7 @@ class ThrowableObject extends MovableObject {
         this.height = 70;
         this.loadImages(this.IMAGES_ROTATING);
         this.loadImages(this.IMAGES_BOTTLE_SPLASH);
+        this.world = world;
         this.trow();
         this.animate();
 
@@ -34,10 +39,11 @@ class ThrowableObject extends MovableObject {
     animate() {
         setInterval(() => {
             if (this.splash == true) {
-                console.log('splash')
+
                 this.playAnimation(this.IMAGES_BOTTLE_SPLASH)
-                this.speedY = 0
-                this.speedX = 0
+                this.speedY = 0;
+                this.speedX = 0;
+                this.acceleration = 0;
             } else {
                 this.playAnimation(this.IMAGES_ROTATING)
             }
@@ -48,14 +54,30 @@ class ThrowableObject extends MovableObject {
     trow() {
         this.speedY = 30;
         this.applyGravity();
-        setInterval(() => {
-            this.x += 10
-        }, 25)
+        this.throwAnimation = setInterval(() => {
+            if (!this.splash) {
+                this.x += 10;
+            }
+        }, 25);
     }
 
-    splash() {
-        console.log('splash')
+    bottleSplash() {
+        console.log('Bottle splashing!');
         this.splash = true;
+        clearInterval(this.throwAnimation); // Stop the throw animation
+        this.acceleration = 0;
+        this.speedY = 0;
+        this.speedX = 0; // Ensure horizontal movement stops
+
+        // Stop the splash animation after 1 second
+        this.splashTimeout = setTimeout(() => {
+            // Here you can either hide the bottle or remove it from the game
+            // For example, you could remove it from the world's throwableObject array
+            const index = this.world.throwableObject.indexOf(this);
+            if (index > -1) {
+                this.world.throwableObject.splice(index, 1);
+            }
+        }, 1000); // Duration of splash animation
     }
 
 

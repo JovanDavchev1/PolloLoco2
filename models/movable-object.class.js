@@ -7,6 +7,7 @@ class MovableObject extends DrawableObject {
     energy = 100;
     lastHit = 0;
 
+
     applyGravity() {
         setInterval(() => {
             if (this.isAbovaGround() || this.speedY > 0) {
@@ -29,11 +30,13 @@ class MovableObject extends DrawableObject {
     }
 
     isColliding(mo) {
-        return this.x + this.width > mo.x &&
-            this.y + this.hieght > mo.y &&
-            this.x < mo.x &&
-            this.y < mo.y + mo.hieght
+        console.log('this is mo',mo);  // Log mo to inspect its properties
+        return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+            this.y + this.hieght - this.offset.bottom > mo.y + mo.offset.top &&
+            this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
+            this.y + this.offset.top > mo.y + mo.hieght - mo.offset.bottom;
     }
+    
 
     hit() {
         this.energy -= 5

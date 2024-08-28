@@ -5,6 +5,13 @@ class Character extends MovableObject {
     width = 150
     speed = 5
 
+    offset = {
+        top: 120,
+        left: 30,
+        right: 40,
+        bottom: 30
+    }
+
 
     IMAGES_WALKING = [
         'img/2_character_pepe/2_walk/W-21.png',
@@ -59,7 +66,7 @@ class Character extends MovableObject {
     animate() {
         setInterval(() => {
             this.walking_sound.pause()
-          
+
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
                 this.moveRight()
                 this.walking_sound.play()
