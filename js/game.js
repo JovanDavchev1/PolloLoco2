@@ -16,14 +16,10 @@ function init() {
 
 function startGame() {
   
-  if (typeof initlvl1 === 'function') {
-      initlvl1();
-  } else {
-      console.error('initlvl1 function is not defined.');
-  }
+ 
+  initlvl1();
 
-
-  document.getElementById('start-game').classList.add('d-none')
+  document.getElementById('menu-conteiner').classList.add('d-none')
   world.gameStart();
 }
 

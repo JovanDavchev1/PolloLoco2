@@ -13,8 +13,9 @@ body {
     background-position: center;
     font-family: 'Zabras';
     margin: 0;
-    
+
 }
+
 h1 {
     margin-top: 8px;
     margin-bottom: 8px;
@@ -28,26 +29,26 @@ canvas {
 }
 
 @media only screen and (max-width: 720px) {
-    canvas{
+    canvas {
         width: 100%;
     }
 }
 
 @media only screen and (max-height: 480px) {
-    canvas{
+    canvas {
         height: 100vh;
     }
+
     h1 {
         display: none;
     }
 }
 
 a {
-    position: absolute;
     text-decoration: none;
     color: red;
     font-size: 64px;
-    top: 130px;
+
 }
 
 a:hover {
@@ -55,11 +56,23 @@ a:hover {
 }
 
 .d-none {
-    display: none;
+    display: none !important;
 }
 
 .start-screen {
     display: flex;
     justify-content: center;
- 
+    align-items: center;
+
+}
+
+.canvas-conteiner {
+    position: relative;
+}
+
+.menu-conteiner {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+
 }
