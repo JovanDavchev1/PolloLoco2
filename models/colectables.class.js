@@ -13,8 +13,8 @@ class Collectible extends DrawableObject {
         this.loadImage(imagePath);
         this.x = x;
         this.y = y;
-        this.width = 50; // Set appropriate width for collectible
-        this.height = 50; // Set appropriate height for collectible
+        this.width = 70; // Set appropriate width for collectible
+        this.height = 100; // Set appropriate height for collectible
         this.type = type;
     }
 }

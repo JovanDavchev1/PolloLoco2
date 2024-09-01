@@ -5,6 +5,9 @@ class ThrowableObject extends MovableObject {
     splashAnimation;
     currentFrame = 0;
     world;
+    width = 70; 
+    height = 100;
+
 
     offset = {
         top: 0,
@@ -33,8 +36,7 @@ class ThrowableObject extends MovableObject {
         super().loadImage('img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png');
         this.x = x;
         this.y = y;
-        this.width = 70;
-        this.height = 70;
+       
         this.loadImages(this.IMAGES_ROTATING);
         this.loadImages(this.IMAGES_BOTTLE_SPLASH);
         this.world = world;
@@ -84,7 +86,7 @@ class ThrowableObject extends MovableObject {
             if (index > -1) {
                 this.world.throwableObject.splice(index, 1);
             }
-        }, 1000); // Duration of splash animation
+        }, 300); // Duration of splash animation
     }
 
 

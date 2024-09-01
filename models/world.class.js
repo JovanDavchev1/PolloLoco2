@@ -20,6 +20,7 @@ class World {
     maxBottles = 10;
     gameOver = false; // Flag to check if the game is over
     gameOverScreen = new GameOverScreen()
+    debug = true;
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -122,7 +123,7 @@ class World {
         if (this.gameStarted && !this.gameOver) {
             setInterval(() => {
                 this.checkCollisions();
-                this.checkBottleCollisions(); // New method to check bottle collisions
+                this.checkBottleCollisions();
                 this.checkThrowObject();
                 if (this.character.isDead()) {
                     this.gameOver = true;
@@ -146,23 +147,23 @@ class World {
             let bottle = new ThrowableObject(this.character.x, this.character.y + 100, this);
             this.throwableObject.push(bottle);
             this.collectedBottles--; // Decrease the count of collected bottles
-            this.statusBarBottles.setPercentage(this.getBottlesPercentage()); 
+            this.statusBarBottles.setPercentage(this.getBottlesPercentage());
             console.log('Bottle thrown! Remaining:', this.collectedBottles);
         }
     }
 
-    checkBottleCollisions() {
-        this.throwableObject.forEach((bottle) => {
-            this.level.enemies.forEach((enemy) => {
-                if (bottle.isColliding(enemy)) {
-                    bottle.bottleSplash(); 
-                }
-            });
-        });
-    }
-
-
-
+    // checkBottleCollisions() {
+    //   this.throwableObject.forEach((bottle) => {
+    //         this.level.enemies.forEach((enemy) => {
+    //              if (bottle.isColliding(enemy)) {
+    //                   bottle.bottleSplash();
+    //                   if (typeof enemy.hitByBottle === 'function') {
+    //                       enemy.hitByBottle();
+    //                  }
+    //               }
+    //           });
+    //      });
+    //   }
     checkCollisions() {
         // Check collisions with enemies first
         this.level.enemies.forEach((enemy) => {
@@ -172,13 +173,13 @@ class World {
                 console.log('Character hit by enemy! Energy:', this.character.energy);
             }
         });
-    
+
         // Then check for collectible collisions
         this.level.collectibles.forEach((collectible, index) => {
             if (this.character.isColliding(collectible)) {
                 if (collectible.type === 'bottle') {
                     this.collectedBottles++;
-                    this.statusBarBottles.setPercentage(this.getBottlesPercentage()); 
+                    this.statusBarBottles.setPercentage(this.getBottlesPercentage());
                     console.log('Bottle collected! Total:', this.collectedBottles);
                 } else if (collectible.type === 'coin') {
                     this.collectedCoins++;
@@ -190,7 +191,26 @@ class World {
             }
         });
     }
-    
+
+    checkBottleCollisions() {
+        this.throwableObject.forEach((bottle) => {
+            this.level.enemies.forEach((enemy) => {
+                if (bottle.isColliding(enemy)) {
+                    console.log('Collision detected with:', enemy.constructor.name);
+                    if (typeof enemy.hitByBottle === 'function') {
+                        bottle.bottleSplash(); // Trigger splash effect
+                        enemy.hitByBottle();  // Call hitByBottle method
+                    } else {
+                        console.warn(`Enemy of type ${enemy.constructor.name} does not have a hitByBottle method.`);
+                    }
+                }
+            });
+        });
+    }
+
+
+   
+
 
 
 }

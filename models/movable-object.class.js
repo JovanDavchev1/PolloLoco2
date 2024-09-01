@@ -14,6 +14,7 @@ class MovableObject extends DrawableObject {
             if (this.isAbovaGround() || this.speedY > 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration
+                
             }
         }, 1000 / 25);
     }
@@ -33,9 +34,9 @@ class MovableObject extends DrawableObject {
 
     isColliding(mo) {
         return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
-               this.y + this.hieght - this.offset.bottom > mo.y + mo.offset.top &&
+               this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
                this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
-               this.y + this.offset.top < mo.y + mo.hieght - mo.offset.bottom;
+               this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom;
     }
     
 

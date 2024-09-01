@@ -6,7 +6,7 @@ class cloud extends MovableObject {
         this.x = -150 + Math.random() * 500;
         this.y = 50
         this.width = 500
-        this.hieght = 250
+        this.height = 250
         this.animate()
     
     }

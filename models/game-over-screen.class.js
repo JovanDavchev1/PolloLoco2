@@ -5,6 +5,6 @@ class GameOverScreen extends DrawableObject {
         this.x = 0;
         this.y = 0;
         this.width = 800; 
-        this.hieght = 600; 
+        this.height = 600; 
     }
 }
