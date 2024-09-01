@@ -1,6 +1,7 @@
 class Chicken extends MovableObject {
     height = 100;
     width = 100;
+    isDeadFlag = false; // Flag to indicate if the chicken is dead
 
     offset = {
         top: 0,
@@ -15,25 +16,33 @@ class Chicken extends MovableObject {
         'img/3_enemies_chicken/chicken_normal/1_walk/3_w.png'
     ];
 
+    IMAGES_DEAD = [
+        'img/3_enemies_chicken/chicken_normal/2_dead/dead.png'
+    ];
+
     constructor() {
         super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
+        this.loadImages(this.IMAGES_DEAD); // Load the death image
         this.x = 1000 + Math.random() * 500;
-        this.y = 350; // Set a default y position
-       
+        this.y = 350;
         this.speed = 0.5 * Math.random();
-        this.energy = 20; // Define energy for the chicken
+        this.energy = 20; // Chicken's energy
         this.animate();
     }
 
     animate() {
-        setInterval(() => {
-            this.x -= this.speed;
-        }, 100 / 60);
+        this.walkingInterval = setInterval(() => {
+            if (!this.isDeadFlag) {
+                this.x -= this.speed;
+            }
+        }, 1000 / 60);
 
-        setInterval(() => {
-            this.playAnimation(this.IMAGES_WALKING);
-        }, 5000 / 60);
+        this.animationInterval = setInterval(() => {
+            if (!this.isDeadFlag) {
+                this.playAnimation(this.IMAGES_WALKING);
+            }
+        }, 100);
     }
 
     hitByBottle() {
@@ -46,9 +55,24 @@ class Chicken extends MovableObject {
 
     die() {
         console.log('Chicken died!');
-        // Handle the chicken's death (remove from the game, play death animation, etc.)
-        if (this.world) {
-            this.world.level.enemies = this.world.level.enemies.filter(enemy => enemy !== this);
+        this.isDeadFlag = true; 
+        this.speed = 0; 
+        clearInterval(this.walkingInterval);
+        clearInterval(this.animationInterval);
+
+        this.playAnimation(this.IMAGES_DEAD); 
+
+       
+        setTimeout(() => {
+            if (this.world) {
+                this.world.level.enemies = this.world.level.enemies.filter(enemy => enemy !== this);
+            }
+        }, 1000);
+    }
+
+    isColliding(mo) {
+        if (this.isDeadFlag) {
+            return false; // Skip collision if the chicken is dead
         }
     }
 }

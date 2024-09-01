@@ -71,6 +71,10 @@ class World {
             this.addObjectsToMap(this.level.enemies);
 
             this.ctx.translate(-this.camera_x, 0);
+
+            this.checkCollisions(); // Move collision check here
+            this.checkBottleCollisions(); // Move bottle collision check here
+
             requestAnimationFrame(() => this.draw());
         } else if (this.gameOver) {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -83,7 +87,6 @@ class World {
             requestAnimationFrame(() => this.draw());
         }
     }
-
 
 
     addObjectsToMap(objects) {
@@ -125,10 +128,11 @@ class World {
                 this.checkCollisions();
                 this.checkBottleCollisions();
                 this.checkThrowObject();
+                this.updateEnemies();
                 if (this.character.isDead()) {
                     this.gameOver = true;
                 }
-            }, 1000);
+            }, 100); // Check every 100 milliseconds
         }
     }
 
@@ -152,18 +156,6 @@ class World {
         }
     }
 
-    // checkBottleCollisions() {
-    //   this.throwableObject.forEach((bottle) => {
-    //         this.level.enemies.forEach((enemy) => {
-    //              if (bottle.isColliding(enemy)) {
-    //                   bottle.bottleSplash();
-    //                   if (typeof enemy.hitByBottle === 'function') {
-    //                       enemy.hitByBottle();
-    //                  }
-    //               }
-    //           });
-    //      });
-    //   }
     checkCollisions() {
         // Check collisions with enemies first
         this.level.enemies.forEach((enemy) => {
@@ -174,7 +166,7 @@ class World {
             }
         });
 
-        // Then check for collectible collisions
+        // Check for collectible collisions
         this.level.collectibles.forEach((collectible, index) => {
             if (this.character.isColliding(collectible)) {
                 if (collectible.type === 'bottle') {
@@ -190,6 +182,9 @@ class World {
                 this.level.collectibles.splice(index, 1);
             }
         });
+
+        // Remove dead chickens
+
     }
 
     checkBottleCollisions() {
@@ -208,8 +203,10 @@ class World {
         });
     }
 
+    updateEnemies() {
+        this.level.enemies = this.level.enemies.filter(enemy => !enemy.isDeadFlag);
+    }
 
-   
 
 
 

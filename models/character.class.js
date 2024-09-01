@@ -1,4 +1,8 @@
 class Character extends MovableObject {
+
+    invincible = false;
+    invincibilityDuration = 2000
+
     x = 120;
     y = 120;
     height = 320

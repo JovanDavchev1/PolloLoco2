@@ -6,15 +6,16 @@ class MovableObject extends DrawableObject {
     acceleration = 2.5;
     energy = 100;
     lastHit = 0;
+    invincible = false;
+    invincibilityDuration = 2000
 
-  
 
     applyGravity() {
         setInterval(() => {
             if (this.isAbovaGround() || this.speedY > 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration
-                
+
             }
         }, 1000 / 25);
     }
@@ -31,29 +32,34 @@ class MovableObject extends DrawableObject {
         return this.y >= 120
     }
 
-
     isColliding(mo) {
-        return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
-               this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
-               this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
-               this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom;
+        if (this.isDeadFlag) {
+            return false; 
+        }
+        const buffer = 10; // Buffer size
+        return this.x + this.width - this.offset.right + buffer > mo.x + mo.offset.left &&
+            this.y + this.height - this.offset.bottom + buffer > mo.y + mo.offset.top &&
+            this.x + this.offset.left - buffer < mo.x + mo.width - mo.offset.right &&
+            this.y + this.offset.top - buffer < mo.y + mo.height - mo.offset.bottom;
     }
-    
 
     hit() {
-        this.energy -= 5
+        if (this.invincible) return; // Ignore hits if invincible
+
+        this.energy -= 5;
         if (this.energy < 0) {
             this.energy = 0;
         } else {
             this.lastHit = new Date().getTime();
+            this.invincible = true;
+            setTimeout(() => this.invincible = false, this.invincibilityDuration); // Reset invincibility after duration
         }
     }
 
-    isHurth() {
-        let timepassed = new Date().getTime() - this.lastHit;
-        timepassed = timepassed / 1000
-        return timepassed < 2
 
+    isHurth() {
+        let timePassed = new Date().getTime() - this.lastHit;
+        return timePassed < 2000; // Adjust the cooldown time to 2 seconds
     }
 
     isDead() {
