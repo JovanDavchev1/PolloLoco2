@@ -5,8 +5,9 @@ class Endboss extends MovableObject {
   speed = 10;
   attack = false;
   direction = 'left';
-  energy = 1000; // Added energy property to keep track of health
+  energy = 100; // Added energy property to keep track of health
   active = true; // Added to track boss activity
+  statusBarEndBoss = new StatusBarBoss()
 
   offset = {
     top: 120,
@@ -131,18 +132,21 @@ class Endboss extends MovableObject {
   }
 
   hitByBottle() {
-    if (this.energy <= 0 || this.isInvulnerable) return; // Prevent further hits if dead or invulnerable
+    if (this.energy <= 0 || this.isInvulnerable) return;
     console.log('Endboss hit by bottle!');
-    this.energy -= 350; // Decrease boss's energy by 100
-    console.log('boss energie', this.energy);
+    this.energy -= 35;
+    world.bossEnergie -= 35
+    this.statusBarEndBoss.setPercentage(this.energy);
     this.handleHurtMovement();
     this.playAnimation(this.IMAGES_HURT);
-  
-    this.isInvulnerable = true; // Make the boss invulnerable for 0.5 seconds
+    
+    
+
+    this.isInvulnerable = true;
     setTimeout(() => {
       this.isInvulnerable = false;
     }, 500);
-  
+
     if (this.energy <= 0) {
       this.die();
     }
@@ -153,32 +157,32 @@ class Endboss extends MovableObject {
       this.active = false;
       this.speed = 0;
 
-     
+
       let frameCountHurt = 0;
       const hurtInterval = setInterval(() => {
         this.playAnimation(this.IMAGES_HURT);
         frameCountHurt++;
 
         if (frameCountHurt >= this.IMAGES_HURT.length * 3) {
-          clearInterval(hurtInterval); 
+          clearInterval(hurtInterval);
 
-         
+
           let frameCountDead = 0;
           const deathInterval = setInterval(() => {
             this.playAnimation(this.IMAGES_DEAD);
             frameCountDead++;
 
             if (frameCountDead >= 3) {
-              clearInterval(deathInterval); 
+              clearInterval(deathInterval);
             }
-          }, 300); 
+          }, 300);
         }
-      }, 150); 
+      }, 150);
 
-    
+
       setTimeout(() => {
         world.gameEnd = true;
-      }, this.IMAGES_HURT.length * 300 + this.IMAGES_DEAD.length * 300); 
+      }, this.IMAGES_HURT.length * 300 + this.IMAGES_DEAD.length * 300);
     }
   }
 

@@ -9,8 +9,6 @@ class MovableObject extends DrawableObject {
     invincible = false;
     invincibilityDuration = 2000
 
-    
-
     applyGravity() {
         setInterval(() => {
             if (this.isAbovaGround() || this.speedY > 0) {

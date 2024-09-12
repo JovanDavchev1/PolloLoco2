@@ -71,7 +71,7 @@ class ThrowableObject extends MovableObject {
     }
 
     bottleSplash() {
-        console.log('Bottle splashing!');
+       
         this.splash = true;
         clearInterval(this.throwAnimation); // Stop the throw animation
         this.acceleration = 0;

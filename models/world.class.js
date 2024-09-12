@@ -21,6 +21,9 @@ class World {
     gameOver = false; // Flag to check if the game is over
     gameOverScreen = new GameOverScreen()
     debug = true;
+    statusBarBoss = new StatusBarBoss()
+
+
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -29,7 +32,6 @@ class World {
         console.log('Game started is ', this.gameStarted)
         this.draw();
         this.setWorld();
-        this.statusBarBottles.setPercentage(this.getBottlesPercentage());
 
     }
 
@@ -39,12 +41,12 @@ class World {
 
     gameStart() {
         if (!this.gameStarted) {
-            // Ensure level1 is initialized before starting the game
+
             if (!level1) {
                 console.error('Level1 is not initialized.');
                 return;
             }
-            this.level = level1; // Use the globally initialized level1
+            this.level = level1;
             this.gameStarted = true;
             this.run();
             this.draw();
@@ -63,6 +65,8 @@ class World {
             this.addToMap(this.statusBar);
             this.addToMap(this.statusBarBottles);
             this.addToMap(this.statusBarCoins);
+            this.addToMap(this.statusBarBoss);
+
             this.ctx.translate(this.camera_x, 0);
 
             this.addToMap(this.character);
@@ -88,7 +92,6 @@ class World {
         }
     }
 
-
     addObjectsToMap(objects) {
         objects.forEach(o => {
             this.addToMap(o)
@@ -100,16 +103,14 @@ class World {
             this.flipImage(mo)
         }
 
-
         mo.draw(this.ctx);
         mo.drawBorder(this.ctx);
 
         if (mo.otherDirections) {
             this.flipImageBack(mo)
         }
-
-
     }
+
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.width, 0);
@@ -122,6 +123,13 @@ class World {
         this.ctx.restore();
     }
 
+    updateBossStatusBar() {
+        let boss = this.level.enemies.find(enemy => enemy instanceof Endboss);
+        if (boss) {
+            this.statusBarBoss.setPercentage(boss.energy);
+        }
+    }
+
     run() {
         if (this.gameStarted && !this.gameOver) {
             setInterval(() => {
@@ -129,14 +137,13 @@ class World {
                 this.checkBottleCollisions();
                 this.checkThrowObject();
                 this.updateEnemies();
+                this.updateBossStatusBar();
                 if (this.character.isDead()) {
                     this.gameOver = true;
                 }
-            }, 100); // Check every 100 milliseconds
+            }, 100); 
         }
     }
-
-
 
     getBottlesPercentage() {
         return (this.collectedBottles / this.maxBottles) * 100;
@@ -162,39 +169,33 @@ class World {
             if (this.character.isColliding(enemy)) {
                 this.character.hit();
                 this.statusBar.setPercentage(this.character.energy);
-                console.log('Character hit by enemy! Energy:', this.character.energy);
             }
         });
 
-        // Check for collectible collisions
         this.level.collectibles.forEach((collectible, index) => {
             if (this.character.isColliding(collectible)) {
                 if (collectible.type === 'bottle') {
                     this.collectedBottles++;
                     this.statusBarBottles.setPercentage(this.getBottlesPercentage());
-                    console.log('Bottle collected! Total:', this.collectedBottles);
+
                 } else if (collectible.type === 'coin') {
                     this.collectedCoins++;
                     this.statusBarCoins.setPercentage(this.getCoinsPercentage());
-                    console.log('Coin collected! Total:', this.collectedCoins);
+
                 }
-                // Remove the collected item from the world
                 this.level.collectibles.splice(index, 1);
             }
         });
-
-        // Remove dead chickens
-
     }
 
     checkBottleCollisions() {
         this.throwableObject.forEach((bottle) => {
             this.level.enemies.forEach((enemy) => {
                 if (bottle.isColliding(enemy)) {
-                    console.log('Collision detected with:', enemy.constructor.name);
+
                     if (typeof enemy.hitByBottle === 'function') {
-                        bottle.bottleSplash(); // Trigger splash effect
-                        enemy.hitByBottle();  // Call hitByBottle method
+                        bottle.bottleSplash(); 
+                        enemy.hitByBottle(); 
                     } else {
                         console.warn(`Enemy of type ${enemy.constructor.name} does not have a hitByBottle method.`);
                     }
@@ -206,8 +207,4 @@ class World {
     updateEnemies() {
         this.level.enemies = this.level.enemies.filter(enemy => !enemy.isDeadFlag);
     }
-
-
-
-
 }
