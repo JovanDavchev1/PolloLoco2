@@ -16,6 +16,8 @@ class Endboss extends MovableObject {
     bottom: 30
   };
 
+
+
   IMAGES_ALERT = [
     "./img/4_enemie_boss_chicken/2_alert/G5.png",
     "./img/4_enemie_boss_chicken/2_alert/G6.png",
@@ -67,6 +69,7 @@ class Endboss extends MovableObject {
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_ATTACK);
+  
     this.x = 2700;
     console.log('this is char x ', world.character.x)
     this.animate();
@@ -168,7 +171,7 @@ class Endboss extends MovableObject {
         this.playAnimation(this.IMAGES_HURT);
         frameCountHurt++;
 
-        if (frameCountHurt >= this.IMAGES_HURT.length * 2) {
+        if (frameCountHurt >= this.IMAGES_HURT.length * 3) {
           clearInterval(hurtInterval);
 
 
