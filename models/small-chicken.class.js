@@ -24,11 +24,11 @@ class SmallChicken extends MovableObject {
     constructor() {
         super().loadImage('img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
-        this.loadImages(this.IMAGES_DEAD); // Load the death image
+        this.loadImages(this.IMAGES_DEAD); 
         this.x = 1000 + Math.random() * 500;
         this.y = 397;
         this.speed = 1.5 * Math.random();
-        this.energy = 10; // Chicken's energy
+        this.energy = 10; 
         this.animate();
     }
 
@@ -47,15 +47,13 @@ class SmallChicken extends MovableObject {
     }
 
     hitByBottle() {
-        console.log('Chicken hit by bottle!');
-        this.energy -= 20; // Decrease the chicken's energy
+        this.energy -= 20; 
         if (this.energy <= 0) {
-            this.die(); // Handle chicken death
+            this.die(); 
         }
     }
 
     die() {
-        console.log('Chicken died!');
         this.isDeadFlag = true; 
         this.speed = 0; 
         clearInterval(this.walkingInterval);

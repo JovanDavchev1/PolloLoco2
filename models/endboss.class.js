@@ -5,8 +5,8 @@ class Endboss extends MovableObject {
   speed = 10;
   attack = false;
   direction = 'left';
-  energy = 100; // Added energy property to keep track of health
-  active = true; // Added to track boss activity
+  energy = 100; 
+  active = true; 
   statusBarEndBoss = new StatusBarBoss()
 
   offset = {
@@ -96,7 +96,7 @@ class Endboss extends MovableObject {
       }
 
       this.handleDeath();
-      this.handleHurt();
+
 
       if (world.character.x > 2100 && !this.hadFirstContact) {
         i = 0;
@@ -138,9 +138,14 @@ class Endboss extends MovableObject {
     world.bossEnergie -= 35
     this.statusBarEndBoss.setPercentage(this.energy);
     this.handleHurtMovement();
-    this.playAnimation(this.IMAGES_HURT);
-    
-    
+    if (!this.die()) {
+      this.handleHurt();
+    }
+
+
+
+
+
 
     this.isInvulnerable = true;
     setTimeout(() => {
@@ -163,7 +168,7 @@ class Endboss extends MovableObject {
         this.playAnimation(this.IMAGES_HURT);
         frameCountHurt++;
 
-        if (frameCountHurt >= this.IMAGES_HURT.length * 3) {
+        if (frameCountHurt >= this.IMAGES_HURT.length * 2) {
           clearInterval(hurtInterval);
 
 
@@ -187,7 +192,19 @@ class Endboss extends MovableObject {
   }
 
   handleHurt() {
-    // Optionally, handle some hurt logic here
+    if (this.hurtInterval) {
+      clearInterval(this.hurtInterval);
+    }
+
+    let totalDuration = this.IMAGES_HURT.length * 300;
+    this.hurtInterval = setInterval(() => {
+      this.playAnimation(this.IMAGES_HURT);
+    }, 100);
+
+    setTimeout(() => {
+      clearInterval(this.hurtInterval);
+      this.hurtInterval = null;
+    }, totalDuration);
   }
 
   handleHurtMovement() {

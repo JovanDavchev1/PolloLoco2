@@ -56,39 +56,21 @@ class World {
     draw() {
         if (this.gameStarted && !this.gameOver) {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
             this.ctx.translate(this.camera_x, 0);
-            this.addObjectsToMap(this.level.backgroundObjects);
-            this.addObjectsToMap(this.level.collectibles);
-
+            this.unMovableObjects()
             this.ctx.translate(-this.camera_x, 0);
-            this.addToMap(this.statusBar);
-            this.addToMap(this.statusBarBottles);
-            this.addToMap(this.statusBarCoins);
-            this.addToMap(this.statusBarBoss);
-
+            this.statusBars()
             this.ctx.translate(this.camera_x, 0);
-
-            this.addToMap(this.character);
-            this.addObjectsToMap(this.throwableObject);
-            this.addObjectsToMap(this.level.clouds);
-            this.addObjectsToMap(this.level.enemies);
-
+            this.playerDraw()
             this.ctx.translate(-this.camera_x, 0);
-
-            this.checkCollisions(); // Move collision check here
-            this.checkBottleCollisions(); // Move bottle collision check here
-
+            this.checkCollisions();
+            
+            this.checkBottleCollisions();
             requestAnimationFrame(() => this.draw());
         } else if (this.gameOver) {
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.addObjectsToMap(this.level.backgroundObjects);
-            this.addToMap(this.gameOverScreen);
-            // Stop the game loop
+            this.gameOverDraw()
         } else {
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.addToMap(this.startingScreen);
-            requestAnimationFrame(() => this.draw());
+            this.startingScreenDraw()
         }
     }
 
@@ -141,7 +123,7 @@ class World {
                 if (this.character.isDead()) {
                     this.gameOver = true;
                 }
-            }, 100); 
+            }, 100);
         }
     }
 
@@ -164,26 +146,27 @@ class World {
     }
 
     checkCollisions() {
-        // Check collisions with enemies first
         this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
-                this.character.hit();
-                this.statusBar.setPercentage(this.character.energy);
+                if (this.character.isCollidingFromAbove(enemy)) {
+                    enemy.die(); // Kill the enemy
+                    this.character.speedY = 20; // Bounce player after jumping on the enemy
+                } else {
+                    this.character.hit(); // Player gets hurt if hit from the side
+                    this.statusBar.setPercentage(this.character.energy);
+                }
             }
         });
-
         this.level.collectibles.forEach((collectible, index) => {
             if (this.character.isColliding(collectible)) {
                 if (collectible.type === 'bottle') {
                     this.collectedBottles++;
                     this.statusBarBottles.setPercentage(this.getBottlesPercentage());
-
                 } else if (collectible.type === 'coin') {
                     this.collectedCoins++;
                     this.statusBarCoins.setPercentage(this.getCoinsPercentage());
-
                 }
-                this.level.collectibles.splice(index, 1);
+                this.level.collectibles.splice(index, 1); // Remove collected item
             }
         });
     }
@@ -194,8 +177,8 @@ class World {
                 if (bottle.isColliding(enemy)) {
 
                     if (typeof enemy.hitByBottle === 'function') {
-                        bottle.bottleSplash(); 
-                        enemy.hitByBottle(); 
+                        bottle.bottleSplash();
+                        enemy.hitByBottle();
                     } else {
                         console.warn(`Enemy of type ${enemy.constructor.name} does not have a hitByBottle method.`);
                     }
@@ -207,4 +190,36 @@ class World {
     updateEnemies() {
         this.level.enemies = this.level.enemies.filter(enemy => !enemy.isDeadFlag);
     }
+
+    statusBars() {
+        this.addToMap(this.statusBar);
+        this.addToMap(this.statusBarBottles);
+        this.addToMap(this.statusBarCoins);
+        this.addToMap(this.statusBarBoss);
+    }
+
+    unMovableObjects() {
+        this.addObjectsToMap(this.level.backgroundObjects);
+        this.addObjectsToMap(this.level.collectibles);
+    }
+
+    playerDraw() {
+        this.addToMap(this.character);
+        this.addObjectsToMap(this.throwableObject);
+        this.addObjectsToMap(this.level.clouds);
+        this.addObjectsToMap(this.level.enemies);
+    }
+
+    gameOverDraw() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.addObjectsToMap(this.level.backgroundObjects);
+        this.addToMap(this.gameOverScreen);
+    }
+
+    startingScreenDraw() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.addToMap(this.startingScreen);
+        requestAnimationFrame(() => this.draw());
+    }
 }
+

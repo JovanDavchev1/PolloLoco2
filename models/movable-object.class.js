@@ -33,17 +33,26 @@ class MovableObject extends DrawableObject {
 
     isColliding(mo) {
         if (this.isDeadFlag) {
-            return false; 
+            return false;
         }
-        const buffer = 10; // Buffer size
+        const buffer = 10;
         return this.x + this.width - this.offset.right + buffer > mo.x + mo.offset.left &&
             this.y + this.height - this.offset.bottom + buffer > mo.y + mo.offset.top &&
             this.x + this.offset.left - buffer < mo.x + mo.width - mo.offset.right &&
             this.y + this.offset.top - buffer < mo.y + mo.height - mo.offset.bottom;
     }
 
+    isCollidingFromAbove(mo) {
+        const verticalCollision = this.isColliding(mo);
+        const isFalling = this.speedY < 0;
+        const playerBottom = this.y + this.height - this.offset.bottom;
+        const enemyTop = mo.y + mo.offset.top;
+        const isAbove = playerBottom >= enemyTop;
+        return verticalCollision && isAbove && isFalling;
+    }
+
     hit() {
-        if (this.invincible) return; // Ignore hits if invincible
+        if (this.invincible) return; 
 
         this.energy -= 5;
         if (this.energy < 0) {
@@ -51,14 +60,15 @@ class MovableObject extends DrawableObject {
         } else {
             this.lastHit = new Date().getTime();
             this.invincible = true;
-            setTimeout(() => this.invincible = false, this.invincibilityDuration); // Reset invincibility after duration
+            setTimeout(() => this.invincible = false, this.invincibilityDuration); 
         }
     }
 
 
+
     isHurth() {
         let timePassed = new Date().getTime() - this.lastHit;
-        return timePassed < 2000; // Adjust the cooldown time to 2 seconds
+        return timePassed < 2000; 
     }
 
     isDead() {
@@ -84,4 +94,6 @@ class MovableObject extends DrawableObject {
     jump() {
         this.speedY = 30;
     };
+
+
 }
