@@ -12,6 +12,7 @@ class Character extends MovableObject {
     idleTimer = null;
     longIdleTimer = null;
     isMoving = false;
+    idleAfterSecond =true;
 
     offset = {
         top: 0,
@@ -159,18 +160,23 @@ class Character extends MovableObject {
     }
 
     startIdleTimers() {
-        if (!this.idleTimer) {
+        if (!this.idleTimer && this.idleAfterSecond) {
             this.idleTimer = setTimeout(() => {
                 if (!this.isMoving) {
-                    this.playAnimation(this.IMAGES_IDLE); // Play idle animation after 1 second
+                    setInterval(() => {
+                        this.playAnimation(this.IMAGES_IDLE);
+                    }, 500);
                 }
             }, 1000);
         }
 
         if (!this.longIdleTimer) {
             this.longIdleTimer = setTimeout(() => {
+                this.idleAfterSecond == false;
                 if (!this.isMoving) {
-                    this.playAnimation(this.IMAGES_LONG_IDLE); // Play long idle animation after 4 seconds
+                    setInterval(() => {
+                        this.playAnimation(this.IMAGES_LONG_IDLE);
+                    }, 500);
                 }
             }, 4000);
         }

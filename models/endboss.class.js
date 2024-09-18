@@ -5,8 +5,8 @@ class Endboss extends MovableObject {
   speed = 10;
   attack = false;
   direction = 'left';
-  energy = 100; 
-  active = true; 
+  energy = 100;
+  active = true;
   statusBarEndBoss = new StatusBarBoss()
 
   offset = {
@@ -69,7 +69,7 @@ class Endboss extends MovableObject {
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_ATTACK);
-  
+
     this.x = 2700;
     console.log('this is char x ', world.character.x)
     this.animate();
@@ -145,11 +145,6 @@ class Endboss extends MovableObject {
       this.handleHurt();
     }
 
-
-
-
-
-
     this.isInvulnerable = true;
     setTimeout(() => {
       this.isInvulnerable = false;
@@ -164,8 +159,6 @@ class Endboss extends MovableObject {
     if (this.energy <= 0 && this.active) {
       this.active = false;
       this.speed = 0;
-
-
       let frameCountHurt = 0;
       const hurtInterval = setInterval(() => {
         this.playAnimation(this.IMAGES_HURT);
@@ -173,8 +166,6 @@ class Endboss extends MovableObject {
 
         if (frameCountHurt >= this.IMAGES_HURT.length * 3) {
           clearInterval(hurtInterval);
-
-
           let frameCountDead = 0;
           const deathInterval = setInterval(() => {
             this.playAnimation(this.IMAGES_DEAD);
@@ -186,7 +177,6 @@ class Endboss extends MovableObject {
           }, 300);
         }
       }, 150);
-
 
       setTimeout(() => {
         world.gameEnd = true;
