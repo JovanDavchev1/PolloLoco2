@@ -12,7 +12,8 @@ class Character extends MovableObject {
     idleTimer = null;
     longIdleTimer = null;
     isMoving = false;
-    idleAfterSecond =true;
+    idleForAfterSecond = false;
+    idleForAfterFourSeconds = false;
 
     offset = {
         top: 0,
@@ -143,12 +144,12 @@ class Character extends MovableObject {
                 this.playAnimation(this.IMAGES_DEAD);
             } else if (this.isAbovaGround()) {
                 this.playAnimation(this.IMAGES_JUMPING);
-            } else {
-                if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                    this.playAnimation(this.IMAGES_WALKING);
-                } else {
-                    this.handleIdleState();
-                }
+            } else if (this.idleForAfterFourSeconds) {
+                this.playAnimation(this.IMAGES_LONG_IDLE);
+            } else if (this.idleForAfterSecond) {
+                this.playAnimation(this.IMAGES_IDLE);
+            } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+                this.playAnimation(this.IMAGES_WALKING);
             }
         }, 100);
     }
@@ -160,23 +161,20 @@ class Character extends MovableObject {
     }
 
     startIdleTimers() {
-        if (!this.idleTimer && this.idleAfterSecond) {
+        if (!this.idleTimer) {
             this.idleTimer = setTimeout(() => {
                 if (!this.isMoving) {
-                    setInterval(() => {
-                        this.playAnimation(this.IMAGES_IDLE);
-                    }, 500);
+                    this.idleForAfterSecond = true;
+                    this.idleForAfterFourSeconds = false; 
                 }
             }, 1000);
         }
 
         if (!this.longIdleTimer) {
             this.longIdleTimer = setTimeout(() => {
-                this.idleAfterSecond == false;
                 if (!this.isMoving) {
-                    setInterval(() => {
-                        this.playAnimation(this.IMAGES_LONG_IDLE);
-                    }, 500);
+                    this.idleForAfterSecond = false; 
+                    this.idleForAfterFourSeconds = true;
                 }
             }, 4000);
         }
@@ -187,7 +185,8 @@ class Character extends MovableObject {
         clearTimeout(this.longIdleTimer);
         this.idleTimer = null;
         this.longIdleTimer = null;
+        this.idleForAfterSecond = false;
+        this.idleForAfterFourSeconds = false; 
     }
-
-
 }
+

@@ -49,7 +49,7 @@ class World {
             this.level = level1;
             this.gameStarted = true;
             this.run();
-            this.draw();
+            this.draw();       
         }
     }
 
