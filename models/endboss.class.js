@@ -109,7 +109,7 @@ class Endboss extends MovableObject {
   }
 
   endbossMove() {
-    if (this.energy <= 0) return; // Boss stops moving when dead
+    if (this.energy <= 0) return; 
     this.playAnimation(this.IMAGES_WALKING);
 
     if (this.direction === 'left') {
@@ -174,9 +174,9 @@ class Endboss extends MovableObject {
             if (frameCountDead >= 3) {
               clearInterval(deathInterval);
             }
-          }, 300);
+          }, 400);
         }
-      }, 150);
+      }, 250);
 
       setTimeout(() => {
         world.gameEnd = true;

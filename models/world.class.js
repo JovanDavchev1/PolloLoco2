@@ -49,7 +49,7 @@ class World {
             this.level = level1;
             this.gameStarted = true;
             this.run();
-            this.draw();       
+            this.draw();
         }
     }
 
@@ -64,7 +64,7 @@ class World {
             this.playerDraw()
             this.ctx.translate(-this.camera_x, 0);
             this.checkCollisions();
-            
+
             this.checkBottleCollisions();
             requestAnimationFrame(() => this.draw());
         } else if (this.gameOver) {
@@ -86,7 +86,7 @@ class World {
         }
 
         mo.draw(this.ctx);
-        mo.drawBorder(this.ctx);
+       // mo.drawBorder(this.ctx);
 
         if (mo.otherDirections) {
             this.flipImageBack(mo)
@@ -175,13 +175,13 @@ class World {
         this.throwableObject.forEach((bottle) => {
             this.level.enemies.forEach((enemy) => {
                 if (bottle.isColliding(enemy)) {
-
                     if (typeof enemy.hitByBottle === 'function') {
                         bottle.bottleSplash();
                         enemy.hitByBottle();
-                    } else {
-                        console.warn(`Enemy of type ${enemy.constructor.name} does not have a hitByBottle method.`);
-                    }
+                    } 
+                }
+                if (bottle.y >= 380) {
+                    bottle.bottleSplash();
                 }
             });
         });

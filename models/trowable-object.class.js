@@ -42,13 +42,13 @@ class ThrowableObject extends MovableObject {
         this.world = world;
         this.trow();
         this.animate();
+        
 
     };
 
     animate() {
         setInterval(() => {
             if (this.splash == true) {
-
                 this.playAnimation(this.IMAGES_BOTTLE_SPLASH)
                 this.speedY = 0;
                 this.speedX = 0;
@@ -86,7 +86,7 @@ class ThrowableObject extends MovableObject {
             if (index > -1) {
                 this.world.throwableObject.splice(index, 1);
             }
-        }, 300); // Duration of splash animation
+        }, 200); // Duration of splash animation
     }
 
 
