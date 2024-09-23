@@ -72,6 +72,7 @@ class Endboss extends MovableObject {
 
     this.x = 2700;
     console.log('this is char x ', world.character.x)
+    console.log('this is char y ', world.character.y)
     this.animate();
   }
 

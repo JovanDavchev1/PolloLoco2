@@ -46,6 +46,7 @@ class World {
                 console.error('Level1 is not initialized.');
                 return;
             }
+
             this.level = level1;
             this.gameStarted = true;
             this.run();
@@ -64,7 +65,6 @@ class World {
             this.playerDraw()
             this.ctx.translate(-this.camera_x, 0);
             this.checkCollisions();
-
             this.checkBottleCollisions();
             requestAnimationFrame(() => this.draw());
         } else if (this.gameOver) {
@@ -84,9 +84,7 @@ class World {
         if (mo.otherDirections) {
             this.flipImage(mo)
         }
-
         mo.draw(this.ctx);
-       // mo.drawBorder(this.ctx);
 
         if (mo.otherDirections) {
             this.flipImageBack(mo)
@@ -147,12 +145,13 @@ class World {
 
     checkCollisions() {
         this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy)) {
+            if (!enemy.isDeadFlag && this.character.isColliding(enemy)) {
                 if (this.character.isCollidingFromAbove(enemy)) {
-                    enemy.die(); // Kill the enemy
-                    this.character.speedY = 20; // Bounce player after jumping on the enemy
-                } else {
-                    this.character.hit(); // Player gets hurt if hit from the side
+                    enemy.die();
+                    this.character.speedY = 20;
+                    console.log('inside coliding above') 
+                } else if (!enemy.isDeadFlag) {
+                    this.character.hit();
                     this.statusBar.setPercentage(this.character.energy);
                 }
             }
@@ -166,7 +165,7 @@ class World {
                     this.collectedCoins++;
                     this.statusBarCoins.setPercentage(this.getCoinsPercentage());
                 }
-                this.level.collectibles.splice(index, 1); // Remove collected item
+                this.level.collectibles.splice(index, 1);
             }
         });
     }

@@ -7,7 +7,8 @@ class MovableObject extends DrawableObject {
     energy = 100;
     lastHit = 0;
     invincible = false;
-    invincibilityDuration = 2000
+    invincibilityDuration = 1000
+
 
     applyGravity() {
         setInterval(() => {
@@ -45,22 +46,25 @@ class MovableObject extends DrawableObject {
     isCollidingFromAbove(mo) {
         const verticalCollision = this.isColliding(mo);
         const isFalling = this.speedY < 0;
+        const isInAir =  this.y < 120
         const playerBottom = this.y + this.height - this.offset.bottom;
         const enemyTop = mo.y + mo.offset.top;
         const isAbove = playerBottom >= enemyTop;
-        return verticalCollision && isAbove && isFalling;
+        console.log(`Vertical Collision: ${verticalCollision}, Is Falling: ${isFalling}, Is Above: ${isAbove}, is in air ${isInAir}`);
+        return verticalCollision && isAbove && isFalling && isInAir;
     }
 
     hit() {
-        if (this.invincible) return; 
+        if (this.invincible) return;
 
         this.energy -= 5;
         if (this.energy < 0) {
             this.energy = 0;
         } else {
+            console.log('coliding invincible')
             this.lastHit = new Date().getTime();
             this.invincible = true;
-            setTimeout(() => this.invincible = false, this.invincibilityDuration); 
+            setTimeout(() => this.invincible = false, this.invincibilityDuration);
         }
     }
 
@@ -68,7 +72,7 @@ class MovableObject extends DrawableObject {
 
     isHurth() {
         let timePassed = new Date().getTime() - this.lastHit;
-        return timePassed < 2000; 
+        return timePassed < 2000;
     }
 
     isDead() {
