@@ -24,9 +24,9 @@ class Chicken extends MovableObject {
         super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD); // Load the death image
-        this.x = 1000 + Math.random() * 500;
+        this.x = 1000 + Math.random() * 300;
         this.y = 330;
-        this.speed = 0.5 * Math.random();
+        this.speed = 5 * Math.random();
         this.energy = 20; // Chicken's energy
         this.animate();
     }
@@ -72,7 +72,7 @@ class Chicken extends MovableObject {
 
     isColliding(mo) {
         if (this.isDeadFlag) {
-            return false; // Skip collision if the chicken is dead
+            return false; 
         }
     }
 }

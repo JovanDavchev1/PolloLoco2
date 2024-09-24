@@ -7,13 +7,14 @@ class Character extends MovableObject {
     y = 120;
     height = 320
     width = 150
-    speed = 5
+    speed = 15
 
     idleTimer = null;
     longIdleTimer = null;
     isMoving = false;
     idleForAfterSecond = false;
     idleForAfterFourSeconds = false;
+    throwableObject = new ThrowableObject()
 
     offset = {
         top: 0,

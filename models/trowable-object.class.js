@@ -5,8 +5,11 @@ class ThrowableObject extends MovableObject {
     splashAnimation;
     currentFrame = 0;
     world;
-    width = 70; 
-    height = 100;
+    width = 70;
+    height = 100; 
+    characher;
+    movingToTheRight = true;
+    movingToTheLeft = false;
 
 
     offset = {
@@ -36,14 +39,12 @@ class ThrowableObject extends MovableObject {
         super().loadImage('img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png');
         this.x = x;
         this.y = y;
-       
+
         this.loadImages(this.IMAGES_ROTATING);
         this.loadImages(this.IMAGES_BOTTLE_SPLASH);
         this.world = world;
         this.trow();
         this.animate();
-        
-
     };
 
     animate() {
@@ -71,22 +72,18 @@ class ThrowableObject extends MovableObject {
     }
 
     bottleSplash() {
-       
+
         this.splash = true;
-        clearInterval(this.throwAnimation); // Stop the throw animation
+        clearInterval(this.throwAnimation);
         this.acceleration = 0;
         this.speedY = 0;
-        this.speedX = 0; // Ensure horizontal movement stops
-
-        // Stop the splash animation after 1 second
+        this.speedX = 0;
         this.splashTimeout = setTimeout(() => {
-            // Here you can either hide the bottle or remove it from the game
-            // For example, you could remove it from the world's throwableObject array
             const index = this.world.throwableObject.indexOf(this);
             if (index > -1) {
                 this.world.throwableObject.splice(index, 1);
             }
-        }, 200); // Duration of splash animation
+        }, 200);
     }
 
 

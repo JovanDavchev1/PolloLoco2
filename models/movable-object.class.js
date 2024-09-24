@@ -10,6 +10,7 @@ class MovableObject extends DrawableObject {
     invincibilityDuration = 1000
 
 
+
     applyGravity() {
         setInterval(() => {
             if (this.isAbovaGround() || this.speedY > 0) {
@@ -46,7 +47,7 @@ class MovableObject extends DrawableObject {
     isCollidingFromAbove(mo) {
         const verticalCollision = this.isColliding(mo);
         const isFalling = this.speedY < 0;
-        const isInAir =  this.y < 120
+        const isInAir = this.y < 120
         const playerBottom = this.y + this.height - this.offset.bottom;
         const enemyTop = mo.y + mo.offset.top;
         const isAbove = playerBottom >= enemyTop;
@@ -88,7 +89,6 @@ class MovableObject extends DrawableObject {
 
     moveRight() {
         this.x += this.speed;
-
     }
 
     moveLeft() {
