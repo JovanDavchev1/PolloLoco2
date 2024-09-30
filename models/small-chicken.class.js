@@ -2,7 +2,7 @@ class SmallChicken extends MovableObject {
 
     height = 50;
     width = 50;
-    isDeadFlag = false; 
+    isDeadFlag = false;
 
     offset = {
         top: 0,
@@ -10,6 +10,8 @@ class SmallChicken extends MovableObject {
         right: 0,
         bottom: 0
     };
+
+    sound_chicken_die = new Audio('audio/diechiocken.mp3')
 
     IMAGES_WALKING = [
         'img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
@@ -24,12 +26,13 @@ class SmallChicken extends MovableObject {
     constructor() {
         super().loadImage('img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
-        this.loadImages(this.IMAGES_DEAD); 
+        this.loadImages(this.IMAGES_DEAD);
         this.x = 1000 + Math.random() * 500;
         this.y = 377;
         this.speed = 1.5 * Math.random();
-        this.energy = 10; 
+        this.energy = 10;
         this.animate();
+        this.sound_chicken_die.pause()
     }
 
     animate() {
@@ -47,21 +50,22 @@ class SmallChicken extends MovableObject {
     }
 
     hitByBottle() {
-        this.energy -= 20; 
+        this.energy -= 20;
         if (this.energy <= 0) {
-            this.die(); 
+            this.die();
         }
     }
 
     die() {
-        this.isDeadFlag = true; 
-        this.speed = 0; 
+        this.sound_chicken_die.play()
+        this.isDeadFlag = true;
+        this.speed = 0;
         clearInterval(this.walkingInterval);
         clearInterval(this.animationInterval);
 
-        this.playAnimation(this.IMAGES_DEAD); 
+        this.playAnimation(this.IMAGES_DEAD);
 
-       
+
         setTimeout(() => {
             if (this.world) {
                 this.world.level.enemies = this.world.level.enemies.filter(enemy => enemy !== this);
@@ -71,7 +75,7 @@ class SmallChicken extends MovableObject {
 
     isColliding(mo) {
         if (this.isDeadFlag) {
-            return false; 
+            return false;
         }
     }
 }

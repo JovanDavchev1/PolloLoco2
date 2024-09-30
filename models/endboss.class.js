@@ -7,7 +7,8 @@ class Endboss extends MovableObject {
   direction = 'left';
   energy = 100;
   active = true;
-  statusBarEndBoss = new StatusBarBoss()
+  statusBarEndBoss = new StatusBarBoss();
+  isHurt = false; // New flag for managing hurt state
 
   offset = {
     top: 120,
@@ -15,8 +16,6 @@ class Endboss extends MovableObject {
     right: 40,
     bottom: 30
   };
-
-
 
   IMAGES_ALERT = [
     "./img/4_enemie_boss_chicken/2_alert/G5.png",
@@ -26,7 +25,7 @@ class Endboss extends MovableObject {
     "./img/4_enemie_boss_chicken/2_alert/G9.png",
     "./img/4_enemie_boss_chicken/2_alert/G10.png",
     "./img/4_enemie_boss_chicken/2_alert/G11.png",
-    "./img/4_enemie_boss_chicken/2_alert/G12.png",
+    "./img/4_enemie_boss_chicken/2_alert/G12.png"
   ];
 
   IMAGES_ATTACK = [
@@ -37,30 +36,30 @@ class Endboss extends MovableObject {
     "./img/4_enemie_boss_chicken/3_attack/G17.png",
     "./img/4_enemie_boss_chicken/3_attack/G18.png",
     "./img/4_enemie_boss_chicken/3_attack/G19.png",
-    "./img/4_enemie_boss_chicken/3_attack/G20.png",
+    "./img/4_enemie_boss_chicken/3_attack/G20.png"
   ];
 
   IMAGES_WALKING = [
     "./img/4_enemie_boss_chicken/1_walk/G1.png",
     "./img/4_enemie_boss_chicken/1_walk/G2.png",
     "./img/4_enemie_boss_chicken/1_walk/G3.png",
-    "./img/4_enemie_boss_chicken/1_walk/G4.png",
+    "./img/4_enemie_boss_chicken/1_walk/G4.png"
   ];
 
   IMAGES_HURT = [
     "./img/4_enemie_boss_chicken/4_hurt/G21.png",
     "./img/4_enemie_boss_chicken/4_hurt/G22.png",
-    "./img/4_enemie_boss_chicken/4_hurt/G23.png",
+    "./img/4_enemie_boss_chicken/4_hurt/G23.png"
   ];
 
   IMAGES_DEAD = [
     "./img/4_enemie_boss_chicken/5_dead/G24.png",
     "./img/4_enemie_boss_chicken/5_dead/G25.png",
-    "./img/4_enemie_boss_chicken/5_dead/G26.png",
+    "./img/4_enemie_boss_chicken/5_dead/G26.png"
   ];
 
   hadFirstContact = false;
-  join_sound = new Audio('audio/boss.mp3')
+  join_sound = new Audio('audio/boss.mp3');
 
   constructor() {
     super().loadImage(this.IMAGES_WALKING[0]);
@@ -71,8 +70,6 @@ class Endboss extends MovableObject {
     this.loadImages(this.IMAGES_ATTACK);
 
     this.x = 2700;
-    console.log('this is char x ', world.character.x)
-    console.log('this is char y ', world.character.y)
     this.animate();
   }
 
@@ -95,12 +92,11 @@ class Endboss extends MovableObject {
         } else {
           spawningFinished = true;
         }
-      } else if (this.hadFirstContact) {
+      } else if (this.hadFirstContact && !this.isHurt) { // Only move when not hurt
         this.endbossMove();
       }
 
       this.handleDeath();
-
 
       if (world.character.x > 2100 && !this.hadFirstContact) {
         i = 0;
@@ -110,7 +106,7 @@ class Endboss extends MovableObject {
   }
 
   endbossMove() {
-    if (this.energy <= 0) return; 
+    if (this.energy <= 0) return;
     this.playAnimation(this.IMAGES_WALKING);
 
     if (this.direction === 'left') {
@@ -137,77 +133,65 @@ class Endboss extends MovableObject {
 
   hitByBottle() {
     if (this.energy <= 0 || this.isInvulnerable) return;
-    console.log('Endboss hit by bottle!');
+
     this.energy -= 35;
-    world.bossEnergie -= 35
+    world.bossEnergie -= 35;
     this.statusBarEndBoss.setPercentage(this.energy);
-    this.handleHurtMovement();
-    if (!this.die()) {
+
+    if (this.energy > 0) {
       this.handleHurt();
+    } else {
+      this.die();
     }
 
     this.isInvulnerable = true;
     setTimeout(() => {
       this.isInvulnerable = false;
     }, 500);
-
-    if (this.energy <= 0) {
-      this.die();
-    }
   }
+
+  handleHurt() {
+    if (this.isHurt) return;
+
+    this.isHurt = true;
+    this.speed = 0;
+
+    let hurtFrameIndex = 0;
+    const hurtAnimationInterval = setInterval(() => {
+      this.playAnimation(this.IMAGES_HURT);
+      hurtFrameIndex++;
+
+      if (hurtFrameIndex >= this.IMAGES_HURT.length * 3) {
+        clearInterval(hurtAnimationInterval);
+        this.isHurt = false;
+        this.speed = 10; t
+        this.randomMovement();
+      }
+    }, 250);
+  }
+
 
   handleDeath() {
     if (this.energy <= 0 && this.active) {
       this.active = false;
       this.speed = 0;
-      let frameCountHurt = 0;
-      const hurtInterval = setInterval(() => {
-        this.playAnimation(this.IMAGES_HURT);
-        frameCountHurt++;
+      this.currentImage = 0;
+      let frameIndex = 0;
+      const totalFrames = this.IMAGES_DEAD.length;
 
-        if (frameCountHurt >= this.IMAGES_HURT.length * 3) {
-          clearInterval(hurtInterval);
-          let frameCountDead = 0;
-          const deathInterval = setInterval(() => {
-            this.playAnimation(this.IMAGES_DEAD);
-            frameCountDead++;
-
-            if (frameCountDead >= 3) {
-              clearInterval(deathInterval);
-            }
-          }, 400);
+      const deathAnimation = () => {
+        if (frameIndex < totalFrames) {
+          this.playAnimation(this.IMAGES_DEAD);
+          frameIndex++;
+          setTimeout(deathAnimation, 200);
+        } else {
+          world.gameEnd = true;
         }
-      }, 250);
+      };
 
-      setTimeout(() => {
-        world.gameEnd = true;
-      }, this.IMAGES_HURT.length * 300 + this.IMAGES_DEAD.length * 300);
+      deathAnimation();
     }
   }
-
-  handleHurt() {
-    if (this.hurtInterval) {
-      clearInterval(this.hurtInterval);
-    }
-
-    let totalDuration = this.IMAGES_HURT.length * 300;
-    this.hurtInterval = setInterval(() => {
-      this.playAnimation(this.IMAGES_HURT);
-    }, 100);
-
-    setTimeout(() => {
-      clearInterval(this.hurtInterval);
-      this.hurtInterval = null;
-    }, totalDuration);
-  }
-
-  handleHurtMovement() {
-    this.moveLeft();
-    this.direction = 'left';
-    this.otherDirection = false;
-    this.speed += 1;
-  }
-
   die() {
     return this.energy <= 0;
   }

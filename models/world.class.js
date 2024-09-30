@@ -23,6 +23,12 @@ class World {
     debug = true;
     statusBarBoss = new StatusBarBoss()
 
+    sound_coin_pickup = new Audio('audio/coin.mp3')
+    sound_bottle_pickup = new Audio('audio/bottle.mp3')
+    
+
+
+
 
 
     constructor(canvas, keyboard) {
@@ -32,7 +38,8 @@ class World {
         console.log('Game started is ', this.gameStarted)
         this.draw();
         this.setWorld();
-
+        this.sound_coin_pickup.pause()
+        this.sound_bottle_pickup.pause()
     }
 
     setWorld() {
@@ -157,11 +164,14 @@ class World {
             }
         });
         this.level.collectibles.forEach((collectible, index) => {
+            
             if (this.character.isColliding(collectible)) {
                 if (collectible.type === 'bottle') {
+                    this.sound_bottle_pickup.play()
                     this.collectedBottles++;
                     this.statusBarBottles.setPercentage(this.getBottlesPercentage());
                 } else if (collectible.type === 'coin') {
+                    this.sound_coin_pickup.play()
                     this.collectedCoins++;
                     this.statusBarCoins.setPercentage(this.getCoinsPercentage());
                 }
@@ -218,6 +228,7 @@ class World {
     startingScreenDraw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.addToMap(this.startingScreen);
+        
         requestAnimationFrame(() => this.draw());
     }
 }

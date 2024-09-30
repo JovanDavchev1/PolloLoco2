@@ -9,6 +9,7 @@ class Chicken extends MovableObject {
         right: 0,
         bottom: 0
     };
+    sound_chicken_die = new Audio('audio/diechiocken.mp3')
 
     IMAGES_WALKING = [
         'img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
@@ -29,6 +30,7 @@ class Chicken extends MovableObject {
         this.speed = 5 * Math.random();
         this.energy = 20; // Chicken's energy
         this.animate();
+        this.sound_chicken_die.pause()
     }
 
     animate() {
@@ -54,6 +56,7 @@ class Chicken extends MovableObject {
     }
 
     die() {
+        this.sound_chicken_die.play()
         console.log('Chicken died!');
         this.isDeadFlag = true; 
         this.speed = 0; 

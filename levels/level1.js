@@ -62,7 +62,7 @@ function initlvl1() {
     );
 
     level1.collectibles.push(
-        new Collectible(COIN_IMAGE, 200, 350, 'coin'),
+        new Collectible(COIN_IMAGE, 300, 350, 'coin'),
         new Collectible(BOTTLE_IMAGE_LEFT, 400, 350, 'bottle'),
         new Collectible(COIN_IMAGE, 600, 350, 'coin'),
         new Collectible(BOTTLE_IMAGE_LEFT, 800, 350, 'bottle'),

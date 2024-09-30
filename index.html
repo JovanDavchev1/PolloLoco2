@@ -34,11 +34,17 @@
 <body>
     <h1>El pollo loco</h1>
     <div class="start-screen">
-        <div class="canvas-conteiner"><canvas id="canvas" width="720" height="480"></canvas></div>
+        <div class="canvas-conteiner"><canvas id="canvas" width="720" height="480"></canvas>
+            <div onclick="toggleFullScreen()" class="full-screen"></div>
+            <div> <img id="musicButton" src="img/sound-on.png" alt="Play Music" style="width: 50px; cursor: pointer;"
+                    onclick="toggleMusic()">
+                <audio id="myAudio" src="audio/startmusic.mp3"></audio>
+            </div>
+        </div>
         <div class="menu-conteiner" id="menu-conteiner">
             <a href="#" id="start-game" onclick="startGame()">START</a>
-            <a href="#">LEVEL</a>
         </div>
+
     </div>
 </body>
 
