@@ -37,6 +37,7 @@ class Endboss extends MovableObject {
     "./img/4_enemie_boss_chicken/3_attack/G18.png",
     "./img/4_enemie_boss_chicken/3_attack/G19.png",
     "./img/4_enemie_boss_chicken/3_attack/G20.png"
+    
   ];
 
   IMAGES_WALKING = [
@@ -188,7 +189,6 @@ class Endboss extends MovableObject {
           world.gameEnd = true;
         }
       };
-
       deathAnimation();
     }
   }

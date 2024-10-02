@@ -36,14 +36,24 @@
     <div class="start-screen">
         <div class="canvas-conteiner"><canvas id="canvas" width="720" height="480"></canvas>
             <div onclick="toggleFullScreen()" class="full-screen"></div>
-            <div> <img id="musicButton" src="img/sound-on.png" alt="Play Music" style="width: 50px; cursor: pointer;"
-                    onclick="toggleMusic()">
+            <div class="below-canvas"><img id="musicButton" src="img/sound-on.png" alt="Play Music"
+                    style="width: 50px; cursor: pointer;" onclick="toggleMusic()">
                 <audio id="myAudio" src="audio/startmusic.mp3"></audio>
+                <div class="controls">
+                    <div class="flex-row"><img src="img/left.png" alt="">LEFT</div>
+                    <div class="flex-row"><img src="img/right.png" alt="">RIGHT</div>
+                    <div class="flex-row"><img src="img/space.png" alt="">JUMP</div>
+                    <div class="flex-row"><img src="img/letter-d.png" alt="">Throw Bottle</div>
+                    <div id="resetButtonConteiner" class="back-to-menu d-none" >
+                        <a id="resetButton" onclick="resetGame()" href="#">MENU</a>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="menu-conteiner" id="menu-conteiner">
-            <a href="#" id="start-game" onclick="startGame()">START</a>
-        </div>
+    </div>
+    <div class="menu-conteiner" id="menu-conteiner">
+        <a href="#" id="start-game" onclick="startGame()">START</a>
+    </div>
 
     </div>
 </body>

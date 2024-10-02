@@ -7,20 +7,22 @@ starting_music = new Audio('audio/startmusic.mp3')
 function init() {
   canvas = document.getElementById('canvas');
   world = new World(canvas, keyboard)
-
-
-
-  console.log('my character is', world.character)
-  console.log('my enemie is', world.enemies)
-  console.log('bacground', world.backgroundObjects)
-  console.log('start', world.startingScreen)
 }
 
 function startGame() {
   starting_music.pause()
   initlvl1();
   document.getElementById('menu-conteiner').classList.add('d-none')
+  document.getElementById('resetButtonConteiner').classList.remove('d-none')
   world.gameStart();
+}
+
+function resetGame() {
+  // Re-initialize game
+  initlvl1();
+  world = new World(canvas, keyboard); // Create a new world
+  document.getElementById('resetButtonConteiner').classList.add('d-none')
+  document.getElementById('menu-conteiner').classList.remove('d-none'); // Optionally show the menu again
 }
 
 function toggleFullScreen() {

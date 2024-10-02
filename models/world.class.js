@@ -22,14 +22,8 @@ class World {
     gameOverScreen = new GameOverScreen()
     debug = true;
     statusBarBoss = new StatusBarBoss()
-
     sound_coin_pickup = new Audio('audio/coin.mp3')
     sound_bottle_pickup = new Audio('audio/bottle.mp3')
-    
-
-
-
-
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -151,20 +145,47 @@ class World {
     }
 
     checkCollisions() {
+        this.enemyColision()
+        this.colectibleColision()
+    }
+
+    checkBottleCollisions() {
+        this.throwableObject.forEach((bottle) => {
+            this.level.enemies.forEach((enemy) => {
+                if (bottle.isColliding(enemy)) {
+                    if (typeof enemy.hitByBottle === 'function') {
+                        bottle.bottleSplash();
+                        enemy.hitByBottle();
+                    }
+                }
+                if (bottle.y >= 380) {
+                    bottle.bottleSplash();
+                }
+            });
+        });
+    }
+
+    updateEnemies() {
+        this.level.enemies = this.level.enemies.filter(enemy => !enemy.isDeadFlag);
+    }
+
+    enemyColision() {
         this.level.enemies.forEach((enemy) => {
             if (!enemy.isDeadFlag && this.character.isColliding(enemy)) {
                 if (this.character.isCollidingFromAbove(enemy)) {
                     enemy.die();
                     this.character.speedY = 20;
-                    console.log('inside coliding above') 
+                    console.log('inside coliding above')
                 } else if (!enemy.isDeadFlag) {
                     this.character.hit();
                     this.statusBar.setPercentage(this.character.energy);
                 }
             }
         });
+    }
+
+    colectibleColision() {
         this.level.collectibles.forEach((collectible, index) => {
-            
             if (this.character.isColliding(collectible)) {
                 if (collectible.type === 'bottle') {
                     this.sound_bottle_pickup.play()
@@ -178,26 +199,6 @@ class World {
                 this.level.collectibles.splice(index, 1);
             }
         });
-    }
-
-    checkBottleCollisions() {
-        this.throwableObject.forEach((bottle) => {
-            this.level.enemies.forEach((enemy) => {
-                if (bottle.isColliding(enemy)) {
-                    if (typeof enemy.hitByBottle === 'function') {
-                        bottle.bottleSplash();
-                        enemy.hitByBottle();
-                    } 
-                }
-                if (bottle.y >= 380) {
-                    bottle.bottleSplash();
-                }
-            });
-        });
-    }
-
-    updateEnemies() {
-        this.level.enemies = this.level.enemies.filter(enemy => !enemy.isDeadFlag);
     }
 
     statusBars() {
@@ -228,7 +229,7 @@ class World {
     startingScreenDraw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.addToMap(this.startingScreen);
-        
+
         requestAnimationFrame(() => this.draw());
     }
 }
